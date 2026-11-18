@@ -28,19 +28,24 @@ const TOOLS={
  shoe:{n:"👟 Chaussure",e:"👟",pw:1.5,dmg:10,sfx:"TOC!",fx:"💢",bruise:1},
  pan:{n:"🍳 Poêle",e:"🍳",pw:2.2,dmg:18,sfx:"CLANG!",fx:"⭐",bruise:1},
  hammer:{n:"🔨 Marteau",e:"🔨",pw:2.6,dmg:22,sfx:"BAM!",fx:"💥",bruise:1},
+ card:{n:"🃏 Carte TCG",e:"🃏",pw:.9,dmg:6,sfx:"SLAP!",fx:"🃏",bruise:1},
+ dice:{hidden:1,e:"🎲",pw:.8,dmg:2,sfx:"TOC!",fx:"🎲",bruise:1},
+ coin:{hidden:1,e:"💸",pw:.7,dmg:2,sfx:"CHING!",fx:"💰"},
+ sword:{hidden:1,e:"⚔️",pw:1.4,dmg:3,sfx:"SLASH!",fx:"✨",bruise:1},
+ voomi:{hidden:1,e:"🔊",pw:2.4,dmg:8,sfx:"VOOOMI !",fx:"💥"},
  poke:{n:"👆 Poke",e:"👆",pw:.6,dmg:1,sfx:"boop",fx:"✨",instant:1},
  tickle:{n:"🪶 Chatouilles",e:"🪶",pw:.3,dmg:0,sfx:"tee-hee",fx:"✨",instant:1,tk:1}
 };
 let tool="pillow",hits=0,combo=0,lastHit=0;
 const tdiv=document.getElementById("tools");
-Object.entries(TOOLS).forEach(([k,T])=>{const b=document.createElement("button");b.textContent=T.n;
+Object.entries(TOOLS).filter(([k,T])=>!T.hidden).forEach(([k,T])=>{const b=document.createElement("button");b.textContent=T.n;
   b.onclick=()=>{tool=k;[...tdiv.children].forEach(x=>x.classList.remove("on"));b.classList.add("on")};
   if(k===tool)b.classList.add("on");tdiv.appendChild(b)});
 const cb=document.createElement("button");cb.textContent="🚗 Voiture de Sami";cb.className="car";
 cb.onclick=()=>startCar();tdiv.appendChild(cb);
 
 /* ---------- who's hitting + dialogue ---------- */
-const friends=["Ramtin","Diego","Sami","Ado","Dinu"];
+const friends=["Ramtin","Diego","Sami","Ado","Dinu","Zatos"];
 let who="Random";
 const wdiv=document.createElement("div");wdiv.style.margin="4px";
 ["Random",...friends].forEach(n=>{const b=document.createElement("button");b.textContent=n==="Random"?"🎲 Random":n;
@@ -48,12 +53,88 @@ const wdiv=document.createElement("div");wdiv.style.margin="4px";
   b.onclick=()=>{who=n;[...wdiv.children].forEach(x=>x.style.background="#2c2748");b.style.background="#ff7a59"};
   if(n==="Random")b.style.background="#ff7a59";wdiv.appendChild(b)});
 tdiv.after(wdiv);
+const adiv=document.createElement("div");adiv.style.margin="4px";
+const alabel=document.createElement("span");alabel.textContent="⚡ Assists :";alabel.style.cssText="font-size:14px;opacity:.8;margin-right:4px";adiv.appendChild(alabel);
+wdiv.after(adiv);
+
 const quips={
- Ramtin:["Arrête de me bully, bouffon xDDD","JUNUS t'es trop facile à taper xDDD","Même moi je tape plus fort que ça","Mdrrr il tient plus debout"],
- Diego:["Eh JUNUS, tu fais quoi par terre ?","Encore un petit coup, juste pour le fun","Tu vas pleurer ? xDDD","Sami conduit, tu descends au prochain feu xDDD"],
+ Ramtin:["Arrête de me bully, bouffon xDDD","JUNUS t'es trop facile à taper xDDD","Même moi je tape plus fort que ça","Mdrrr il tient plus debout",
+         "Zatos est Challenger, moi je vais faire Diamant... un jour, peut-être",
+         "Je te tape pour me défouler, JUNUS, à cause des 2k$ que je dois à Zatos",
+         "Si je rate Diamant, je dois 2000 $ à Zatos... tu veux pas me les prêter ?",
+         "Mon ELO est aussi bas que ta dignité, JUNUS"],
+ Diego:["Eh JUNUS, tu fais quoi par terre ?","Encore un petit coup, juste pour le fun","Tu vas pleurer ? xDDD","Sami conduit, tu descends au prochain feu xDDD",
+         "Vooomi !","VOOOMI !!","Vooomi, JUNUS, vooomi !","Vooomi... et boum xDDD"],
  Sami:["Rappelle-toi la voiture JUNUS xDDD","Tu veux un trajet en voiture ? 🚗","Allez JUNUS, relève-toi un peu","Ça c'était pour la portière xDDD"],
  Ado:["Arrête de bouger, bouffon","Je fais que passer par là xDDD","JUNUS t'es nul en esquive","Ado a frappé, Ado est fier"],
- Dinu:["Continue comme ça et je t'en remets une","Dinu t'a vu, JUNUS","Allez, encore un petit coup !","T'es mort de rire ou mort tout court ? xDDD"]};
+ Dinu:["Continue comme ça et je t'en remets une","Dinu t'a vu, JUNUS","Allez, encore un petit coup !","T'es mort de rire ou mort tout court ? xDDD",
+         "J'ai encore mes 2000 dés, ça se revend ça ?",
+         "Investir c'est comme taper JUNUS : faut y croire et ne jamais revendre",
+         "Mes dés valent peut-être plus que ta dignité... ah non, moins",
+         "Je suis un investisseur visionnaire... qui a oublié de vendre"],
+ Zatos:["Ce site est complètement malade, qui a fait ça ?! xDDD",
+         "Je te tape et je farm des golds en même temps, c'est efficace",
+         "JUNUS a moins de PV qu'un mob de niveau 1 à Elwynn",
+         "Je te rachète pour 2 euros, état Played, et c'est cadeau",
+         "Ton deck est tellement nul que même moi je le rachèterais pas",
+         "Attends, je finis mon raid et je reviens te taper",
+         "Ce jeu est insane, je veux le même sur mon Battle.net",
+         "T'as le dos aussi fragile qu'une carte sans sleeve",
+         "Chez Coin de Barons, j'aurais pu te vendre une armure... avant qu'ils me virent",
+         "Virer Zatos, la pire erreur de Coin de Barons, ils savent pas ce qu'ils ont perdu",
+         "Coin de Barons m'a viré mais au moins moi j'ai pas perdu mon temps comme toi",
+         "Opaps m'a scam, et toi tu veux que je pardonne à JUNUS ? Jamais",
+         "Opaps m'a arnaqué mes cartes, j'ai frappé plus fort que ça pour la peine",
+         "Mon ancien patron frappait moins fort que toi, JUNUS... non je rigole, t'es nul",
+         "Opaps m'a dit 'fais-moi confiance', maintenant je tape tout le monde xDDD",
+         "Si Opaps m'avait scam avec ta tête, au moins j'aurais eu un bleu à vendre",
+         "Coin de Barons m'a viré, Opaps m'a scam, et toi tu bouges même pas ?!",
+         "Je te vends ce poing 5 euros, c'est le prix Opaps, donc arnaque",
+         "Challenger atteint. Ramtin me doit 2k$ s'il rate Diamant, et toi un sourire",
+         "Ramtin va me payer, et JUNUS va payer pour Ramtin",
+         "Je suis Challenger, JUNUS. Toi t'es même pas dans le classement",
+         "Opaps m'a scam, Coin de Barons m'a viré, mais Challenger personne me l'enlève"]};
+
+// Mean lines ANY friend can say (friendly roasting)
+const generic=[
+ "JUNUS, t'as la force d'une carte commune sans foil",
+ "Ton cerveau a fait un mulligan et a gardé la main la plus nulle",
+ "T'es le genre de gars qui perd au morpion contre un pigeon",
+ "Même ton ombre veut plus être avec toi",
+ "T'as l'air d'un NPC qui a oublié sa quête",
+ "Tu bouges comme un Wifi à 1 barre",
+ "JUNUS, ton niveau est tellement bas qu'il est enterré",
+ "Si être nul était un sport, tu serais déjà sponsorisé",
+ "On t'a pas tapé assez petit, on a ajusté",
+ "T'es aussi utile qu'un Pikachu dans un booster de Magic",
+ "Courage JUNUS, un jour tu seras moyen",
+ "Ta tête sert vraiment juste à poser des chapeaux",
+ "T'as pris combien en esquive ? Zéro ? Ça se voit",
+ "T'as le charisme d'une carte de terrain basique",
+ "Même le tutoriel se moquerait de toi",
+ "JUNUS, t'as été conçu avec les restes ?",
+ "Si la nullité était un TCG, tu serais le full-art secret",
+ "Respire, JUNUS, c'est juste ta dignité qui s'en va",
+ "T'es la raison pour laquelle on garde les sleeves",
+ "Ton plan de carrière : punching-ball, et encore",
+ "Fun fact : t'as perdu et on a même pas commencé",
+ "T'es lent. Même le chargement du site est plus rapide",
+ "Je dirais que t'es un 2 sur 10, mais je veux pas insulter les 2"];
+
+// Roasts about a specific friend, said by someone else
+const about={
+ Dinu:["Dinu a acheté 2000 dés et a oublié de les revendre, et toi tu te plains ?",
+       "Dinu investit comme il tape : au hasard et sans jamais vendre",
+       "2000 dés en stock... Dinu, va voir un conseiller financier",
+       "Dinu, le Warren Buffett des dés. Qui a tout perdu."],
+ Ramtin:["Ramtin doit 2000 $ à Zatos s'il rate Diamant, bon courage",
+         "Ramtin tape comme il joue à LoL : tout en bas du classement",
+         "Plus que quelques semaines pour Ramtin avant la fin de l'année... tic tac",
+         "Ramtin va finir Diamant le jour où Dinu revendra ses dés"],
+ Zatos:["Zatos est Challenger sur LoL mais s'est fait virer de Coin de Barons, quel parcours",
+        "Zatos est Challenger, mais il s'est fait scam par Opaps, quel talent",
+        "Zatos : 0 patron, 1 scam, 1 pari à 2k$, et il rigole encore"]};
+
 const lines={
  head:["Aïe ma tête !","Pourquoi la tête ?!","Je le dis à maman !","BONK ?! Encore ?!","J'vois des étoiles ⭐"],
  body:["Oof !","Mon déjeuner !","C'est pas gentil !","Hey ! Mon espace perso !","Même pas mal (si, un peu)"],
@@ -69,8 +150,16 @@ let sway=0,swayV=0,headA=0,headV=0,dizzy=0,squash=0,shake=0;
 let damage=0,state="up",fallDir=1,downTimer=0,riseT=0;
 let particles=[],splats=[],marks=[],proj=[],bubble=null;
 let car=null,hidden=false,fly=null;
-const BUBBLE_SECONDS=4.5; // <-- how long messages stay (seconds). Change this!
-const say=(t,l)=>{bubble={t,until:performance.now()+BUBBLE_SECONDS*1000*((l||136)/136)}};
+
+const BUBBLE_SECONDS=4.5; // how long messages stay (seconds)
+let lockUntil=0;           // while locked, only forced messages can replace the bubble
+const say=(t,l,force)=>{
+  const now=performance.now();
+  if(!force&&now<lockUntil)return;
+  bubble={t,until:now+BUBBLE_SECONDS*1000*((l||136)/136)};
+};
+// Used only by the car sequence: show a message, then block other messages for `ms`
+const sayLocked=(t,l,ms)=>{say(t,l,true);lockUntil=performance.now()+ms;};
 
 function pose(){
   return {head:{x:0,y:-300,r:42}, torso:{x:-28,y:-250,w:56,h:100},
@@ -104,23 +193,23 @@ function addBruise(x,y){
 }
 
 /* ---------- knock-down / car ---------- */
-function knockDown(dir){
+function knockDown(dir,silent){
   state="down";fallDir=dir;downTimer=280;damage=100;dizzy=999;
   burst(base.x,base.y-250,"💫",6);
-  say("JUNUS : "+pick(beg),156);
+  if(!silent)say("JUNUS : "+pick(beg),156,true);
 }
 function startCar(){
   if(car||state!=="up"||fly)return;
   car={x:-140,ph:"in",t:0};hidden=true;
-  say("Sami : Monte JUNUS, on t'emmène 😇",176);
+  sayLocked("Sami : Monte JUNUS, on t'emmène 😇",176,3000);
 }
 function land(){
   fly=null;fallDir=1;
   const P=pose();for(let i=0;i<5;i++)addBruise(P.torso.x+Math.random()*P.torso.w,P.torso.y+Math.random()*P.torso.h);
   addBruise(P.head.x,P.head.y);
   shake=30;squash=.5;burst(base.x,base.y-60,"💥",8);sfx(base.x,base.y-100,"PAF !");
-  knockDown(1);
-  say("JUNUS : AÏE MON DOS !!",176);
+  knockDown(1,true);   // silent: the car sequence has its own messages
+  setTimeout(()=>sayLocked("JUNUS : AÏE MON DOS !!",176,2500),2000);
 }
 
 /* ---------- throwing ---------- */
@@ -129,10 +218,34 @@ c.addEventListener("mousedown",ev=>{
   const mx=(ev.clientX-r.left)*c.width/r.width,my=(ev.clientY-r.top)*c.height/r.height;
   const T=TOOLS[tool];
   if(T.instant){impact(mx,my,tool);return;}
+  launch(tool,mx,my,0);
+});
+function launch(key,mx,my,delay){
   const s=Math.floor(Math.random()*3);
   const sx=s===0?-40:s===1?c.width+40:mx+(Math.random()-.5)*200,sy=s===2?c.height+40:my+(Math.random()-.5)*160;
-  proj.push({sx,sy,mx,my,t:0,n:8,key:tool});
+  proj.push({sx,sy,mx,my,t:0,n:8,key,d:delay||0});
+}
+
+/* ---------- friend assists: signature attacks, 10s cooldown ---------- */
+const ASSIST_COOLDOWN=10000;
+const ASSISTS={
+ Diego:{key:"voomi",n:3,gap:16,icon:"🔊",msg:"Diego : VOOOMI !!!"},
+ Dinu:{key:"dice",n:22,gap:4,icon:"🎲",msg:"Dinu : Mes 2000 dés, je les ai jamais revendus xDDD"},
+ Ramtin:{key:"coin",n:14,gap:6,icon:"💸",msg:"Ramtin : Si je rate Diamant je dois 2k$ à Zatos... prends ça JUNUS !"},
+ Zatos:{key:"sword",n:10,gap:6,icon:"⚔️",msg:"Zatos : Challenger atteint. Toi t'es même pas Fer ⚔️"}};
+Object.entries(ASSISTS).forEach(([k,A])=>{
+  const b=document.createElement("button");b.textContent=A.icon+" "+k;
+  b.style.cssText="font-size:14px;margin:3px;padding:6px 11px;border:0;border-radius:10px;background:#6b3fa0;color:#fff;cursor:pointer";
+  b.onclick=()=>assist(k,b);adiv.appendChild(b);
 });
+function assist(k,btn){
+  const A=ASSISTS[k];if(btn.disabled||car||fly||hidden)return;
+  sayLocked(A.msg,176,A.n*A.gap/60*1000+1500);   // one message, no chatter during the volley
+  for(let i=0;i<A.n;i++)
+    launch(A.key,base.x+(Math.random()-.5)*110,base.y-130-Math.random()*210,i*A.gap);
+  btn.disabled=true;btn.style.opacity=.4;
+  setTimeout(()=>{btn.disabled=false;btn.style.opacity=1},ASSIST_COOLDOWN);
+}
 function impact(mx,my,key){
   const T=TOOLS[key],p=toLocal(mx,my);
   const part=(hidden||fly)?null:hitTest(p);
@@ -158,7 +271,9 @@ function impact(mx,my,key){
     if(damage>=70&&Math.random()<.5)t="JUNUS : "+pick(beg);
     else if(damage>=40&&Math.random()<.35)t="JUNUS : "+pick(hurt);
     else if(T.tk)t="JUNUS : "+pick(tickle);
-    else if(Math.random()<.5){const h=who==="Random"?pick(friends):who;t=h+" : "+pick(quips[h]);}
+    else if(Math.random()<.6){const h=who==="Random"?pick(friends):who,r=Math.random();
+      if(r<.2){const subj=pick(Object.keys(about).filter(k=>k!==h));t=h+" : "+pick(about[subj]);}
+      else t=h+" : "+pick(r<.6?quips[h]:generic);}
     else t="JUNUS : "+pick(lines[part]);
     say(t);
   }
@@ -195,7 +310,8 @@ function frame(){
   /* --- car event --- */
   if(car){
     if(car.ph==="in"){car.x+=9;if(car.x>=base.x-190){car.x=base.x-190;car.ph="wait";car.t=0;}}
-    else if(car.ph==="wait"){if(++car.t>40){car.ph="eject";fly={t:0};hidden=false;say("Sami : DEHORS JUNUS ! 🚗💨",176);}}
+    else if(car.ph==="wait"){
+      if(++car.t>110){car.ph="eject";fly={t:0};hidden=false;sayLocked("Sami : DEHORS JUNUS ! 🚗💨",176,2500);}}
     else if(car.ph==="eject"){if(!fly)car.ph="out";}
     else if(car.ph==="out"){car.x-=11;if(car.x<-200)car=null;}
   }
@@ -250,7 +366,6 @@ function frame(){
     g.fillStyle=skin;g.beginPath();g.arc(P.head.x,P.head.y,P.head.r,0,7);g.fill();
     g.fillStyle="#4a2f1b";g.beginPath();g.arc(P.head.x,P.head.y-8,P.head.r+2,Math.PI,0);g.fill();
     face(P);g.restore();
-    /* bruises + stains stuck on him */
     marks=marks.filter(m=>--m.life>0);
     for(const m of marks){g.globalAlpha=Math.min(1,m.life/150)*(m.k==="b"?.75:.95);g.fillStyle=m.col;
       if(m.k==="b"){g.beginPath();g.ellipse(m.x,m.y,m.r,m.r*.7,m.a,0,7);g.fill();
@@ -274,6 +389,7 @@ function frame(){
 
   /* --- flying projectiles --- */
   proj=proj.filter(pr=>{
+    if(pr.d>0){pr.d--;return true;}
     pr.t++;const u=Math.min(1,pr.t/pr.n);
     const x=pr.sx+(pr.mx-pr.sx)*u,y=pr.sy+(pr.my-pr.sy)*u;
     g.save();g.translate(x,y);g.rotate(pr.t*.9);g.font="42px sans-serif";g.textAlign="center";
@@ -290,7 +406,8 @@ function frame(){
   const lbl=state==="down"?"K.O. 💫":"Dignité de JUNUS";g.strokeText(lbl,20,29);g.fillStyle="#fff";g.fillText(lbl,20,29);
 
   /* --- speech bubble (wrapped) --- */
-  if(bubble&&performance.now()<bubble.until){
+  const nowT=performance.now();
+  if(bubble&&nowT<bubble.until){
     g.font="bold 19px sans-serif";g.textAlign="left";
     const maxW=250,words=bubble.t.split(" "),rows=[];let cur="";
     for(const w of words){const t=cur?cur+" "+w:w;
